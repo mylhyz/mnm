@@ -61,8 +61,8 @@ mnm() {
             return 2
           }
           command printf '\r=> '
-          command git commit -m "update" || {
-            mnm_echo >&2 'git commit -m "update" 命令失败'
+          command git commit -m "$(date)" || {
+            mnm_echo >&2 "git commit 命令失败"
             return 2
           }
         fi
