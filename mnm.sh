@@ -44,18 +44,15 @@ mnm() {
     "sync")
         # 判断当前仓库是否是一个git仓库，不是的话报错返回 -1
         if [ -d .git ]; then
-          mnm_echo "=> 当前目录为Git仓库 ."
-          command printf '\r=> '
+          mnm_echo "=> 当前目录为Git仓库"
         else
           mnm_echo "=> 当前目录并非Git仓库 !"
-          command printf '\r=> '
           return 1
         fi
         # 判断当前仓库是否有未保存的修改，是的话保存并提交 -2
         git_status=$(git status --porcelain)
         if [ -z "$git_status" ]; then
-          mnm_echo "=> 当前Git仓库没有未保存的数据 ."
-          command printf '\r=> '
+          mnm_echo "=> 当前Git仓库没有未保存的数据"
         else
           mnm_echo "=> 当前Git仓库有未保存的数据 !"
           command printf '\r=> '
@@ -63,17 +60,20 @@ mnm() {
             mnm_echo >&2 'git add . 命令失败'
             return 2
           }
+          command printf '\r=> '
           command git commit -m "update" || {
             mnm_echo >&2 'git commit -m "update" 命令失败'
             return 2
           }
         fi
         # 拉取远程仓库最新数据 -3
+        command printf '\r=> '
         command git pull --rebase || {
           mnm_echo >&2 'git pull --rebase 命令失败'
           return 3
         }
         # 推送到远程仓库 -4
+        command printf '\r=> '
         command git push || {
           mnm_echo >&2 'git push 命令失败'
           return 4
