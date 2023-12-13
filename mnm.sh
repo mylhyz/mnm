@@ -49,7 +49,7 @@ mnm() {
         else
           mnm_echo "=> 当前目录并非Git仓库 !"
           command printf '\r=> '
-          exit 1
+          return 1
         fi
         # 判断当前仓库是否有未保存的修改，是的话保存并提交 -2
         git_status=$(git status --porcelain)
@@ -61,22 +61,22 @@ mnm() {
           command printf '\r=> '
           command git add . || {
             mnm_echo >&2 'git add . 命令失败'
-            exit 2
+            return 2
           }
           command git commit -m "update" || {
             mnm_echo >&2 'git commit -m "update" 命令失败'
-            exit 2
+            return 2
           }
         fi
         # 拉取远程仓库最新数据 -3
         command git pull --rebase || {
           mnm_echo >&2 'git pull --rebase 命令失败'
-          exit 3
+          return 3
         }
         # 推送到远程仓库 -4
         command git push || {
           mnm_echo >&2 'git push 命令失败'
-          exit 4
+          return 4
         }
     ;;
     *)
