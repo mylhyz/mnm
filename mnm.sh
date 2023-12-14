@@ -43,18 +43,18 @@ mnm() {
   case ${COMMAND} in
     "sync")
         # 判断当前仓库是否是一个git仓库，不是的话报错返回 -1
-        if [ -d .git ]; then
-          mnm_echo "=> 当前目录为Git仓库"
+        if [ -d .git ] && [ -d .obsidian ]; then
+          mnm_echo "=> 当前目录为Obsidian仓库"
         else
-          mnm_echo "=> 当前目录并非Git仓库 !"
+          mnm_echo "=> 当前目录并非Obsidian仓库 !"
           return 1
         fi
         # 判断当前仓库是否有未保存的修改，是的话保存并提交 -2
         git_status=$(git status --porcelain)
         if [ -z "$git_status" ]; then
-          mnm_echo "=> 当前Git仓库没有未保存的数据"
+          mnm_echo "=> 当前Obsidian仓库没有未保存的数据"
         else
-          mnm_echo "=> 当前Git仓库有未保存的数据 !"
+          mnm_echo "=> 当前Obsidian仓库有未保存的数据 !"
           command printf '\r=> '
           command git add . || {
             mnm_echo >&2 'git add . 命令失败'
