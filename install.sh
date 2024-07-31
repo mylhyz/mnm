@@ -137,6 +137,15 @@ install_mnm_from_git() {
   fi
 
   # 检出远程仓库到本地目录
+  # Try to fetch tag
+  if command git --git-dir="$INSTALL_DIR"/.git --work-tree="$INSTALL_DIR" fetch origin tag "$MNM_VERSION" --depth=1 2>/dev/null; then
+    :
+  # Fetch given version
+  elif ! command git --git-dir="$INSTALL_DIR"/.git --work-tree="$INSTALL_DIR" fetch origin "$MNM_VERSION" --depth=1; then
+    nvm_echo >&2 "$fetch_error"
+    exit 1
+  fi
+
   command git -c advice.detachedHead=false --git-dir="$INSTALL_DIR"/.git --work-tree="$INSTALL_DIR" checkout -f --quiet main || {
     mnm_echo >&2 "Failed to checkout the given version $MNM_VERSION. Please report this!"
     exit 2
@@ -149,6 +158,12 @@ install_mnm_from_git() {
       command git --no-pager --git-dir="$INSTALL_DIR"/.git --work-tree="$INSTALL_DIR" branch -D main >/dev/null 2>&1
     fi
   fi
+
+  # 使用 git pull --rebase 更新
+  command git --git-dir="$INSTALL_DIR"/.git --work-tree="$INSTALL_DIR" pull --rebase --quiet origin main || {
+    tms_echo >&2 "Failed to pull the given version $TMS_VERSION. Please report this!"
+    exit 2
+  }
 
   # 清理仓库
   mnm_echo "=> Compressing and cleaning up git repository"
@@ -219,17 +234,6 @@ mnm_do_install() {
       else
         mnm_echo "=> mnm source string already in ${MNM_PROFILE}"
       fi
-      # shellcheck disable=SC2016
-      if ${BASH_OR_ZSH} && ! command grep -qc '$NVM_DIR/bash_completion' "$MNM_PROFILE"; then
-        mnm_echo "=> Appending bash_completion source string to $MNM_PROFILE"
-        command printf "$COMPLETION_STR" >> "$MNM_PROFILE"
-      else
-        mnm_echo "=> bash_completion source string already in ${MNM_PROFILE}"
-      fi
-    fi
-    if ${BASH_OR_ZSH} && [ -z "${MNM_PROFILE-}" ] ; then
-      mnm_echo "=> Please also append the following lines to the if you are using bash/zsh shell:"
-      command printf "${COMPLETION_STR}"
     fi
 
     # Source mnm
