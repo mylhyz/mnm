@@ -5,6 +5,16 @@ Markdown Note Manager 主要用于管理 obsidian 下的所有 markdown 文件
 
 当前通过 bash 脚本实现
 
+# 安装/更新
+
+```bash
+curl -o- https://raw.githubusercontent.com/mylhyz/mnm/main/install.sh | bash
+```
+
+```bash
+wget -qO- https://raw.githubusercontent.com/mylhyz/mnm/main/install.sh | bash
+```
+
 ### License
 
 ```
